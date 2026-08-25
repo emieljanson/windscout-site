@@ -353,36 +353,35 @@
     <section class="unlock" id="build">
       <h2>Would you want one?</h2>
       <p>Tell me which version would be useful to you. This will decide what I build next.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/windscout" method="post" target="popupwindow" onsubmit="window.open('https://buttondown.com/windscout', 'popupwindow')">
+      <form id="interest-form" action="https://formspree.io/f/moeaonzn" method="post">
         <fieldset class="interest-options">
           <legend class="visually-hidden">How would you like to get Windscout?</legend>
           <label class="interest-option">
-            <input type="radio" name="tag" value="diy" required>
+            <input type="radio" name="interest" value="Install it myself" required>
             <span class="interest-copy">
               <strong>Install it myself</strong><span> — €19 software, about €100 hardware</span>
             </span>
           </label>
           <label class="interest-option">
-            <input type="radio" name="tag" value="ready-to-use" required>
+            <input type="radio" name="interest" value="Get one ready to use" required>
             <span class="interest-copy">
               <strong>Get one ready to use</strong><span> — about €199</span>
             </span>
           </label>
           <label class="interest-option">
-            <input type="radio" name="tag" value="updates-only" required>
+            <input type="radio" name="interest" value="Just keep me updated" required>
             <span class="interest-copy">
               <strong>Just keep me updated</strong>
             </span>
           </label>
         </fieldset>
-        <input type="hidden" name="tag" value="windscout-interest">
-        <input type="hidden" name="embed" value="1">
+        <input type="hidden" name="subject" value="New Windscout interest">
         <div class="signup-row">
           <label class="visually-hidden" for="email">Email address</label>
           <input class="email-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-          <button class="button" type="submit">I'm interested</button>
+          <button class="button" type="submit">Send my interest</button>
         </div>
-        <p class="note">No payment. Your answer only helps me decide what to make.</p>
+        <p class="note" id="signup-status" role="status" aria-live="polite">I’ll only email you about Windscout. Unsubscribe anytime.</p>
       </form>
     </section>
 
@@ -547,6 +546,41 @@
 
     })();
 
+  </script>
+  <script>
+    (() => {
+      const form = document.querySelector("#interest-form");
+      const button = form.querySelector("button[type='submit']");
+      const status = document.querySelector("#signup-status");
+      const defaultButtonLabel = button.textContent;
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+        status.textContent = "Sending your interest...";
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            headers: { Accept: "application/json" }
+          });
+
+          if (!response.ok) throw new Error("Submission failed");
+
+          form.reset();
+          status.textContent = "Thanks — I’ll keep you posted.";
+        } catch (error) {
+          status.textContent = "Unable to send. Check your connection and try again.";
+        } finally {
+          button.disabled = false;
+          button.textContent = defaultButtonLabel;
+        }
+      });
+    })();
   </script>
 </body>
 </html>
