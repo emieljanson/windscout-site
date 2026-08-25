@@ -498,19 +498,6 @@
       });
 
       const thresholdY = 322;
-      line(28, thresholdY - 1, 771, thresholdY - 1, { stroke: colors.paper, "stroke-width": 1 });
-      line(28, thresholdY, 771, thresholdY, { stroke: colors.red, "stroke-width": 1 });
-      line(28, thresholdY + 1, 771, thresholdY + 1, { stroke: colors.paper, "stroke-width": 1 });
-      text("17KTS", 770, thresholdY + 5, {
-        class: "threshold-label",
-        "font-size": 15,
-        "font-weight": 700,
-        "text-anchor": "end",
-        stroke: colors.paper,
-        "stroke-width": 3,
-        "paint-order": "stroke"
-      }
-      );
 
       days.forEach((day, dayIndex) => {
         const dayX = 12 + dayIndex * 155;
@@ -540,6 +527,19 @@
           if (point.gust > point.wind && (point.gust - point.wind) * scale >= 6) {
             line(center - 8, gustY, center + 7, gustY, { stroke: colors.ink, "stroke-width": 1 });
           }
+          weatherIcon(point.weather, center, 450, svg);
+        });
+      });
+
+      line(28, thresholdY - 1, 771, thresholdY - 1, { stroke: colors.paper, "stroke-width": 1 });
+      line(28, thresholdY, 771, thresholdY, { stroke: colors.red, "stroke-width": 1 });
+      line(28, thresholdY + 1, 771, thresholdY + 1, { stroke: colors.paper, "stroke-width": 1 });
+
+      days.forEach((day, dayIndex) => {
+        const dayX = 12 + dayIndex * 155;
+        day.points.forEach((point, pointIndex) => {
+          const center = dayX + 26 + pointIndex * 26;
+          const barTop = baseline - point.wind * scale;
           text(String(point.wind), center, Math.max(barTop - 5, 180), {
             "font-size": 15,
             "font-weight": 700,
@@ -548,8 +548,17 @@
             "stroke-width": 3,
             "paint-order": "stroke"
           });
-          weatherIcon(point.weather, center, 450, svg);
         });
+      });
+
+      text("17KTS", 770, thresholdY + 5, {
+        class: "threshold-label",
+        "font-size": 15,
+        "font-weight": 700,
+        "text-anchor": "end",
+        stroke: colors.paper,
+        "stroke-width": 3,
+        "paint-order": "stroke"
       });
     })();
 
