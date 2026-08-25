@@ -569,12 +569,20 @@
             headers: { Accept: "application/json" }
           });
 
-          if (!response.ok) throw new Error("Submission failed");
+          if (!response.ok) {
+            if (response.status === 422) {
+              throw new Error("Check your email address and try again.");
+            }
+            if (response.status === 429) {
+              throw new Error("Too many attempts. Wait a moment and try again.");
+            }
+            throw new Error("Unable to send. Check your connection and try again.");
+          }
 
           form.reset();
           status.textContent = "Thanks — I’ll keep you posted.";
         } catch (error) {
-          status.textContent = "Unable to send. Check your connection and try again.";
+          status.textContent = error.message || "Unable to send. Check your connection and try again.";
         } finally {
           button.disabled = false;
           button.textContent = defaultButtonLabel;
