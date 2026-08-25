@@ -385,7 +385,7 @@
     <section class="unlock" id="build">
       <h2>Would you want one?</h2>
       <p>Tell me which version would be useful to you. This will decide what I build next.</p>
-      <form id="interest-form" action="https://script.google.com/macros/s/AKfycbzOEnnY2C5OC87GXGo4WY7G3pSt0n2bMd7IxO6Q8Fi_n20BhUl1cIVisay5XUCnQBjPKA/exec" method="post" target="interest-response">
+      <form id="interest-form" action="https://formspree.io/f/moeaonzn" method="post">
         <fieldset class="interest-options">
           <legend class="visually-hidden">How would you like to get Windscout?</legend>
           <label class="interest-option">
@@ -408,7 +408,7 @@
           </label>
         </fieldset>
         <input type="hidden" name="source" value="windscout.emieljanson.com">
-        <input class="visually-hidden" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input class="visually-hidden" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="signup-row">
           <label class="visually-hidden" for="email">Email address</label>
           <input class="email-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
@@ -416,7 +416,6 @@
         </div>
         <p class="note" id="signup-status" role="status" aria-live="polite">I’ll only email you about Windscout. Unsubscribe anytime.</p>
       </form>
-      <iframe class="visually-hidden" name="interest-response" title="Form submission response"></iframe>
     </section>
 
     <footer>Windscout is an independent project by <a href="https://emieljanson.com/">Emiel Janson</a>.</footer>
@@ -588,10 +587,7 @@
       const status = document.querySelector("#signup-status");
       const defaultButtonLabel = button.textContent;
       const defaultStatus = status.textContent;
-      let responseTimer;
-
       const finish = (message, success) => {
-        window.clearTimeout(responseTimer);
         button.disabled = false;
         button.classList.toggle("is-success", success);
         status.classList.toggle("is-success", success);
@@ -616,14 +612,7 @@
 
       form.addEventListener("input", clearSuccess);
 
-      window.addEventListener("message", (event) => {
-        const trustedOrigin = event.origin === "https://script.google.com" || event.origin.endsWith(".googleusercontent.com");
-        if (!trustedOrigin || event.data?.source !== "windscout-interest") return;
-
-        finish(event.data.message, event.data.status === "ok");
-      });
-
-      form.addEventListener("submit", (event) => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!form.reportValidity()) return;
 
@@ -631,10 +620,24 @@
         button.textContent = "Sending...";
         status.textContent = "Sending your interest...";
 
-        HTMLFormElement.prototype.submit.call(form);
-        responseTimer = window.setTimeout(() => {
-          finish("The request took too long. Check your connection and try again.", false);
-        }, 20000);
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            headers: { Accept: "application/json" }
+          });
+
+          if (response.ok) {
+            finish("", true);
+            return;
+          }
+
+          const payload = await response.json().catch(() => ({}));
+          const message = payload.errors?.map((error) => error.message).join(" ");
+          finish(message || "Unable to send. Please try again.", false);
+        } catch {
+          finish("Unable to send. Check your connection and try again.", false);
+        }
       });
     })();
   </script>
