@@ -497,8 +497,6 @@
         add("rect", { x: 787, y, width: 1, height: 1, fill: colors.ink });
       });
 
-      const thresholdY = 322;
-
       days.forEach((day, dayIndex) => {
         const dayX = 12 + dayIndex * 155;
         text(day.label, dayX + 17, 126, { "font-size": 15, "font-weight": 700 });
@@ -531,10 +529,6 @@
         });
       });
 
-      line(28, thresholdY - 1, 771, thresholdY - 1, { stroke: colors.paper, "stroke-width": 1 });
-      line(28, thresholdY, 771, thresholdY, { stroke: colors.red, "stroke-width": 1 });
-      line(28, thresholdY + 1, 771, thresholdY + 1, { stroke: colors.paper, "stroke-width": 1 });
-
       days.forEach((day, dayIndex) => {
         const dayX = 12 + dayIndex * 155;
         day.points.forEach((point, pointIndex) => {
@@ -551,15 +545,6 @@
         });
       });
 
-      text("17KTS", 770, thresholdY + 5, {
-        class: "threshold-label",
-        "font-size": 15,
-        "font-weight": 700,
-        "text-anchor": "end",
-        stroke: colors.paper,
-        "stroke-width": 3,
-        "paint-order": "stroke"
-      });
     })();
 
   </script>
