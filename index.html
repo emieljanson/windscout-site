@@ -4,7 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Windscout is an always-on e-ink wind forecast that helps you spot the next good session without checking another app.">
-  <title>Windscout</title>
+  <link rel="canonical" href="https://windscout.emieljanson.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Windscout">
+  <meta property="og:title" content="Catch the good wind.">
+  <meta property="og:description" content="An always-on e-ink wind forecast that keeps the next five days visible at home.">
+  <meta property="og:url" content="https://windscout.emieljanson.com/">
+  <meta property="og:image" content="https://windscout.emieljanson.com/assets/windscout-social.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Windscout showing a five-day wind forecast on an e-ink display">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Catch the good wind.">
+  <meta name="twitter:description" content="An always-on e-ink wind forecast that keeps the next five days visible at home.">
+  <meta name="twitter:image" content="https://windscout.emieljanson.com/assets/windscout-social.jpg">
+  <title>Windscout — Always-on e-ink wind forecast</title>
   <style>
     @font-face {
       font-family: "Inter";
@@ -279,10 +293,21 @@
       padding: 0 14px;
     }
 
+    form .button.is-success,
+    form .button.is-success:hover {
+      border-color: #28603a;
+      background: #28603a;
+    }
+
     .note {
       margin-top: 13px;
       color: var(--muted);
       font-size: 12px;
+    }
+
+    .note.is-success {
+      color: var(--text);
+      font-weight: 600;
     }
 
     footer {
@@ -328,7 +353,7 @@
     </header>
 
     <figure>
-      <img src="assets/windscout-hero-blue.png" alt="Windscout on a cobalt-blue sideboard showing a five-day e-ink wind forecast">
+      <img src="assets/windscout-hero-blue.webp" alt="Windscout on a cobalt-blue sideboard showing a five-day e-ink wind forecast">
     </figure>
 
     <section class="story" aria-label="About Windscout">
@@ -353,7 +378,7 @@
     <section class="unlock" id="build">
       <h2>Would you want one?</h2>
       <p>Tell me which version would be useful to you. This will decide what I build next.</p>
-      <form id="interest-form" action="https://formspree.io/f/moeaonzn" method="post">
+      <form id="interest-form" action="https://script.google.com/macros/s/AKfycbzOEnnY2C5OC87GXGo4WY7G3pSt0n2bMd7IxO6Q8Fi_n20BhUl1cIVisay5XUCnQBjPKA/exec" method="post" target="interest-response">
         <fieldset class="interest-options">
           <legend class="visually-hidden">How would you like to get Windscout?</legend>
           <label class="interest-option">
@@ -375,7 +400,8 @@
             </span>
           </label>
         </fieldset>
-        <input type="hidden" name="subject" value="New Windscout interest">
+        <input type="hidden" name="source" value="windscout.emieljanson.com">
+        <input class="visually-hidden" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="signup-row">
           <label class="visually-hidden" for="email">Email address</label>
           <input class="email-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
@@ -383,6 +409,7 @@
         </div>
         <p class="note" id="signup-status" role="status" aria-live="polite">I’ll only email you about Windscout. Unsubscribe anytime.</p>
       </form>
+      <iframe class="visually-hidden" name="interest-response" title="Form submission response"></iframe>
     </section>
 
     <footer>Windscout is an independent project by <a href="https://emieljanson.com/">Emiel Janson</a>.</footer>
@@ -553,8 +580,43 @@
       const button = form.querySelector("button[type='submit']");
       const status = document.querySelector("#signup-status");
       const defaultButtonLabel = button.textContent;
+      const defaultStatus = status.textContent;
+      let responseTimer;
 
-      form.addEventListener("submit", async (event) => {
+      const finish = (message, success) => {
+        window.clearTimeout(responseTimer);
+        button.disabled = false;
+        button.classList.toggle("is-success", success);
+        status.classList.toggle("is-success", success);
+
+        if (success) {
+          form.reset();
+          button.textContent = "✓ Interest sent";
+          status.textContent = "Thanks — you’re on the Windscout list.";
+        } else {
+          button.textContent = defaultButtonLabel;
+          status.textContent = message || "Unable to send. Check your connection and try again.";
+        }
+      };
+
+      const clearSuccess = () => {
+        if (!button.classList.contains("is-success")) return;
+        button.classList.remove("is-success");
+        button.textContent = defaultButtonLabel;
+        status.classList.remove("is-success");
+        status.textContent = defaultStatus;
+      };
+
+      form.addEventListener("input", clearSuccess);
+
+      window.addEventListener("message", (event) => {
+        const trustedOrigin = event.origin === "https://script.google.com" || event.origin.endsWith(".googleusercontent.com");
+        if (!trustedOrigin || event.data?.source !== "windscout-interest") return;
+
+        finish(event.data.message, event.data.status === "ok");
+      });
+
+      form.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!form.reportValidity()) return;
 
@@ -562,31 +624,10 @@
         button.textContent = "Sending...";
         status.textContent = "Sending your interest...";
 
-        try {
-          const response = await fetch(form.action, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { Accept: "application/json" }
-          });
-
-          if (!response.ok) {
-            if (response.status === 422) {
-              throw new Error("Check your email address and try again.");
-            }
-            if (response.status === 429) {
-              throw new Error("Too many attempts. Wait a moment and try again.");
-            }
-            throw new Error("Unable to send. Check your connection and try again.");
-          }
-
-          form.reset();
-          status.textContent = "Thanks — I’ll keep you posted.";
-        } catch (error) {
-          status.textContent = error.message || "Unable to send. Check your connection and try again.";
-        } finally {
-          button.disabled = false;
-          button.textContent = defaultButtonLabel;
-        }
+        HTMLFormElement.prototype.submit.call(form);
+        responseTimer = window.setTimeout(() => {
+          finish("The request took too long. Check your connection and try again.", false);
+        }, 20000);
       });
     })();
   </script>
