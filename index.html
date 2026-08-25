@@ -262,6 +262,13 @@
       font-weight: 650;
     }
 
+    .hardware-link {
+      color: inherit;
+      text-decoration-color: currentColor;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
     .signup-row {
       display: flex;
       gap: 8px;
@@ -384,7 +391,7 @@
           <label class="interest-option">
             <input type="radio" name="interest" value="Install it myself" required>
             <span class="interest-copy">
-              <strong>Install it myself</strong><span> — €19 software, about €100 hardware</span>
+              <strong>Install it myself</strong><span> — software ~€19 · hardware ~€80–100: <a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1001-p-6534.html" target="_blank" rel="noopener">monochrome</a> or <a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1002-p-6533.html" target="_blank" rel="noopener">color</a></span>
             </span>
           </label>
           <label class="interest-option">
