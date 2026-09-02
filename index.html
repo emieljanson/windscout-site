@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Windscout is an always-on e-ink wind forecast that helps you spot the next good session without checking another app.">
+  <meta name="description" content="Windscout is a free-to-install, always-on e-ink wind forecast for reTerminal that helps you spot the next good session.">
   <link rel="canonical" href="https://windscout.emieljanson.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Windscout">
   <meta property="og:title" content="Catch the next good wind">
-  <meta property="og:description" content="An always-on e-ink wind forecast that keeps the next five days visible at home.">
+  <meta property="og:description" content="A free-to-install e-ink wind forecast for reTerminal that keeps the next five days visible at home.">
   <meta property="og:url" content="https://windscout.emieljanson.com/">
   <meta property="og:image" content="https://windscout.emieljanson.com/assets/windscout-social.jpg">
   <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
   <meta property="og:image:alt" content="Windscout showing a five-day wind forecast on an e-ink display">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Catch the next good wind">
-  <meta name="twitter:description" content="An always-on e-ink wind forecast that keeps the next five days visible at home.">
+  <meta name="twitter:description" content="A free-to-install e-ink wind forecast for reTerminal that keeps the next five days visible at home.">
   <meta name="twitter:image" content="https://windscout.emieljanson.com/assets/windscout-social.jpg">
   <title>Windscout — Always-on e-ink wind forecast</title>
   <style>
@@ -96,13 +96,6 @@
       margin-top: 28px;
       color: #353531;
       font-size: 14px;
-    }
-
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 28px;
     }
 
     .button {
@@ -238,30 +231,6 @@
       border: 0;
     }
 
-    .interest-options {
-      display: grid;
-      gap: 14px;
-    }
-
-    .interest-option {
-      display: grid;
-      grid-template-columns: 16px minmax(0, 1fr);
-      gap: 10px;
-      align-items: start;
-      cursor: pointer;
-    }
-
-    .interest-option input {
-      width: 14px;
-      height: 14px;
-      margin: 3px 0 0;
-      accent-color: var(--text);
-    }
-
-    .interest-copy strong {
-      font-weight: 650;
-    }
-
     .hardware-link {
       color: inherit;
       text-decoration-color: currentColor;
@@ -360,7 +329,7 @@
   <main>
     <header>
       <h1>Catch the next good wind</h1>
-      <p class="intro">I built Windscout because I kept checking the same forecast, hoping a good window would appear. It keeps the next five days visible at home, so you know when to make time and go.</p>
+      <p class="intro">I built Windscout because I kept checking the same forecast, hoping a good window would appear. It keeps the next five days visible at home, so you know when to make time and go. Windscout will be free to install — you’ll only need a reTerminal.</p>
     </header>
 
     <figure>
@@ -375,6 +344,7 @@
         <li><strong>Always on</strong> — no apps, notifications or scrolling</li>
         <li><strong>Months unplugged</strong> — designed for up to three months per charge</li>
         <li><strong>Place it anywhere</strong> — on a desk, shelf or wall</li>
+        <li><strong>Free software</strong> — you only pay for the reTerminal</li>
       </ul>
     </section>
 
@@ -387,36 +357,16 @@
     </section>
 
     <section class="unlock" id="build">
-      <h2>Would you want one?</h2>
-      <p>Tell me which version would be useful to you. This will decide what I build next.</p>
+      <h2>Windscout will be free to install</h2>
+      <p>You’ll only need a <a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1001-p-6534.html" target="_blank" rel="noopener">reTerminal E1001</a> or <a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1002-p-6533.html" target="_blank" rel="noopener">reTerminal E1002</a>. Leave your email and I’ll let you know when the installer is ready.</p>
       <form id="interest-form" action="https://formspree.io/f/moeaonzn" method="post">
-        <fieldset class="interest-options">
-          <legend class="visually-hidden">How would you like to get Windscout?</legend>
-          <label class="interest-option">
-            <input type="radio" name="interest" value="Install it myself" required>
-            <span class="interest-copy">
-              <strong>Install it myself</strong><span> — €19 software + hardware ~<a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1001-p-6534.html" target="_blank" rel="noopener" aria-label="Monochrome hardware, approximately €80">€80</a> – <a class="hardware-link" href="https://www.seeedstudio.com/reTerminal-E1002-p-6533.html" target="_blank" rel="noopener" aria-label="Color hardware, approximately €100">100</a></span>
-            </span>
-          </label>
-          <label class="interest-option">
-            <input type="radio" name="interest" value="Get one ready to use" required>
-            <span class="interest-copy">
-              <strong>Get one ready to use</strong><span> — about €199</span>
-            </span>
-          </label>
-          <label class="interest-option">
-            <input type="radio" name="interest" value="Just keep me updated" required>
-            <span class="interest-copy">
-              <strong>Just keep me updated</strong>
-            </span>
-          </label>
-        </fieldset>
+        <input type="hidden" name="interest" value="Notify me when the free installer is ready">
         <input type="hidden" name="source" value="windscout.emieljanson.com">
         <input class="visually-hidden" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="signup-row">
           <label class="visually-hidden" for="email">Email address</label>
           <input class="email-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-          <button class="button" type="submit">Send my interest</button>
+          <button class="button" type="submit">Notify me</button>
         </div>
         <p class="note" id="signup-status" role="status" aria-live="polite">I’ll only email you about Windscout. Unsubscribe anytime.</p>
       </form>
@@ -598,8 +548,8 @@
 
         if (success) {
           form.reset();
-          button.textContent = "✓ Interest sent";
-          status.textContent = "Thanks — you’re on the Windscout list.";
+          button.textContent = "✓ You’re on the list";
+          status.textContent = "Thanks — I’ll let you know when the installer is ready.";
         } else {
           button.textContent = defaultButtonLabel;
           status.textContent = message || "Unable to send. Check your connection and try again.";
@@ -622,7 +572,7 @@
 
         button.disabled = true;
         button.textContent = "Sending...";
-        status.textContent = "Sending your interest...";
+        status.textContent = "Adding you to the list...";
 
         try {
           const response = await fetch(form.action, {
